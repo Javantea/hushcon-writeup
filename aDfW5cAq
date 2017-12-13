@@ -1,0 +1,90 @@
+/* Hushcon Seattle CTF 2017 by n3x7 and epixoip */
+
+#include <stdio.h>
+#include <errno.h>
+#include <signal.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
+#define PORT 65522
+#define BUFLEN 128
+
+int main()
+{
+    struct sockaddr_in server, client;
+    int sock, fd, pid;
+
+    signal(SIGPIPE, SIG_IGN);
+
+    if ((sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
+        perror("socket error");
+        return errno;
+    }
+
+    memset(&server, 0, sizeof(server));
+
+    server.sin_family = AF_INET;
+    server.sin_addr.s_addr = inet_addr("0.0.0.0");
+    server.sin_port = htons(PORT);
+
+    if ((bind(sock, (struct sockaddr *) &server, sizeof(server))) < 0) {
+        perror("bind error");
+        return errno;
+    }
+
+    if (listen(sock, SOMAXCONN) < 0) {
+        perror("listen error");
+        return errno;
+    }
+
+    printf("Waiting for connections on port tcp/%d\n", PORT);
+
+    for (;;)
+    {
+        unsigned int client_len = sizeof(client);
+
+        if ((fd = accept(sock, (struct sockaddr *) &client, &client_len)) < 0) {
+            perror("error accepting connection");
+            continue;
+        }
+
+        printf("Accepted connection from %s\n", inet_ntoa(client.sin_addr));
+
+        pid = fork();
+
+        if (pid) {
+            close(fd);
+            continue;
+        }
+        else {
+            char recv[BUFLEN + 1];
+            char send[BUFLEN + 3];
+
+            while (1)
+            {
+                memset(recv, 0, sizeof(recv));
+                memset(send, 0, sizeof(send));
+
+                send[0] = 0x3e;
+                send[1] = 0x20;
+
+                if (read(fd, recv, BUFLEN) < 0)
+                {
+                    perror("read error");
+                    close(fd);
+                    return errno;
+                }
+
+                recv[BUFLEN] = 0;
+
+                snprintf(send + 2, sizeof(recv), recv);
+                write(fd, send, sizeof(send));
+                write(fd, "\n", sizeof(char));
+            }
+        }
+    }
+
+    return 0;
+}
