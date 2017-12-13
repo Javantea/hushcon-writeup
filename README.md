@@ -13,7 +13,7 @@
  * [fucked.zip](https://github.com/Javantea/hushcon-writeup/blob/master/fucked.zip)
 * Case #HC201707: Take a Byte Out of Crime 2000 Crime Bucks (Solved)
  * [corrupt_backup.7z](https://github.com/Javantea/hushcon-writeup/blob/master/corrupt_backup.7z.torrent)
- * [magnet](magnet:?xt=urn:btih:398cebb648b5678c85520ee1f74328971c25d191)
+ * magnet:?xt=urn:btih:398cebb648b5678c85520ee1f74328971c25d191
 * Case #HC201708: Someday My Prints Will Come 5000 Crime Bucks (Mostly solved)
  * [aDfW5cAq](https://github.com/Javantea/hushcon-writeup/blob/master/aDfW5cAq)
 
